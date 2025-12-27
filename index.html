@@ -10,23 +10,31 @@
         body { font-family: 'Pretendard', sans-serif; background-color: #f8fafc; }
         .loading { display: none; }
         .loading.active { display: flex; }
-        del { color: #ef4444; text-decoration: line-through; background: #fee2e2; padding: 0 2px; }
-        ins { color: #2563eb; text-decoration: none; font-weight: 700; background: #dbeafe; padding: 0 4px; border-radius: 4px; }
+        
+        /* 9번 지침: 첨삭은 붉은 글씨로 표시 */
+        del { color: #94a3b8; text-decoration: line-through; background: #f1f5f9; padding: 0 2px; }
+        ins { color: #ef4444; text-decoration: none; font-weight: 700; background: #fee2e2; padding: 0 4px; border-radius: 4px; }
+        
         .fade-in { animation: fadeIn 0.5s ease-in-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @media print {
+            .no-print { display: none; }
+            body { background-color: white; padding: 0; }
+            .print-area { box-shadow: none; border: none; width: 100%; max-width: none; }
+        }
     </style>
 </head>
 <body class="p-4 md:p-8">
     <div class="max-w-4xl mx-auto">
-        <header class="text-center mb-10">
+        <header class="text-center mb-10 no-print">
             <h1 class="text-3xl font-bold text-indigo-600 mb-2">✍️ 리야샘 AI 첨삭</h1>
-            <p class="text-slate-600 font-medium">학생의 소중한 표현을 존중하며 꼭 필요한 부분만 세밀하게 다듬습니다.</p>
+            <p class="text-slate-600 font-medium">학생의 글을 소중히 여기며, 논리적인 에세이 작성을 돕는 1:1 튜터입니다.</p>
         </header>
 
-        <div class="bg-white rounded-3xl shadow-xl p-6 mb-8 border border-slate-100">
+        <div class="bg-white rounded-3xl shadow-xl p-6 mb-8 border border-slate-100 no-print">
             <div class="mb-6 p-4 bg-indigo-50 rounded-xl border border-indigo-100 text-center">
-                <p class="text-indigo-700 font-semibold">리야샘 AI 첨삭 시스템 활성화</p>
-                <p class="text-indigo-500 text-sm mt-1">학생의 고유한 표현을 최대한 유지하며 에세이의 논리 구조를 보완합니다.</p>
+                <p class="text-indigo-700 font-semibold">리야샘 AI 튜터링 모드 활성화</p>
+                <p class="text-indigo-500 text-sm mt-1">서론의 이유 언급과 본론의 구조(이유-설명-경험)를 집중 점검합니다.</p>
             </div>
 
             <div id="dropZone" class="border-3 border-dashed border-indigo-200 rounded-2xl p-12 text-center hover:border-indigo-400 hover:bg-indigo-50 transition-all cursor-pointer mb-6 group">
@@ -34,30 +42,30 @@
                 <div id="uploadPrompt">
                     <div class="text-6xl mb-4 group-hover:scale-110 transition-transform">📸</div>
                     <p class="text-lg font-bold text-slate-700">에세이 사진 업로드</p>
-                    <p class="text-sm text-slate-400 mt-2">클릭하거나 이미지 파일을 여기로 끌어다 놓으세요</p>
+                    <p class="text-sm text-slate-400 mt-2">사진을 찍어 올리거나 파일을 드래그하세요</p>
                 </div>
                 <div id="previewArea" class="hidden">
                     <img id="imagePreview" src="" class="max-h-80 mx-auto rounded-xl shadow-lg mb-4 border border-slate-200">
-                    <button id="cancelBtn" class="text-red-500 font-bold hover:underline">사진 취소 및 다시 선택</button>
+                    <button id="cancelBtn" class="text-red-500 font-bold hover:underline">사진 다시 선택</button>
                 </div>
             </div>
 
             <button id="analyzeBtn" class="w-full py-5 bg-indigo-600 text-white rounded-2xl font-bold text-xl hover:bg-indigo-700 transition-all disabled:bg-slate-300 shadow-lg shadow-indigo-100 active:scale-[0.98]" disabled>
-                리야샘 AI 첨삭 시작하기
+                리야샘 AI에게 첨삭 받기
             </button>
         </div>
 
-        <div id="loading" class="loading flex-col items-center justify-center p-10">
+        <div id="loading" class="loading flex-col items-center justify-center p-10 no-print">
             <div class="animate-spin rounded-full h-14 w-14 border-b-4 border-indigo-600 mb-4"></div>
-            <p class="text-indigo-600 font-bold text-lg animate-pulse">리야샘 AI가 학생의 글을 소중히 읽고 있습니다...</p>
-            <p class="text-slate-400 text-sm mt-2">잠시만 기다려 주세요.</p>
+            <p class="text-indigo-600 font-bold text-lg animate-pulse">리야샘 AI가 글의 구조와 표현을 꼼꼼히 보고 있어요...</p>
+            <p class="text-slate-400 text-sm mt-2">논리적인 에세이를 위해 분석 중입니다!</p>
         </div>
 
-        <div id="resultArea" class="hidden space-y-6 fade-in">
+        <div id="resultArea" class="hidden space-y-6 fade-in print-area">
             <div class="bg-white rounded-3xl shadow-xl p-8 border-t-8 border-indigo-500">
-                <div class="flex items-center justify-between mb-6 border-b border-slate-100 pb-4">
+                <div class="flex items-center justify-between mb-6 border-b border-slate-100 pb-4 no-print">
                     <h2 class="text-2xl font-bold text-slate-800 flex items-center gap-2">
-                        <span>📝</span> 리야샘 AI 첨삭 보고서
+                        <span>📝</span> 리야샘 AI 첨삭 결과
                     </h2>
                     <button id="printBtn" class="px-4 py-2 bg-slate-100 text-slate-600 rounded-lg font-bold hover:bg-slate-200 transition-colors">
                         PDF 저장 / 인쇄
@@ -69,9 +77,7 @@
     </div>
 
     <script>
-        // --- [선생님의 API KEY 입력] ---
-        const API_KEY = "AIzaSyD26uKyQvV5plrPBBhlSRPi3pmmqZQ5upM";
-        // -----------------------------
+        const API_KEY = "AIzaSyD26uKyQvV5plrPBBhlSRPi3pmmqZQ5upM"; 
 
         const fileInput = document.getElementById('fileInput');
         const dropZone = document.getElementById('dropZone');
@@ -83,10 +89,7 @@
 
         let base64Image = "";
 
-        // 인쇄 버튼 이벤트
         printBtn.onclick = () => window.print();
-
-        // 파일 선택 이벤트
         dropZone.onclick = () => fileInput.click();
         fileInput.onchange = handleFile;
 
@@ -116,31 +119,30 @@
         };
 
         async function analyzeEssay() {
-            if (!API_KEY || API_KEY.trim() === "") {
-                alert("API Key가 코드에 입력되지 않았습니다. index.html 파일의 API_KEY 변수에 키를 넣어주세요.");
-                return;
-            }
-
             loading.classList.add('active');
             analyzeBtn.disabled = true;
             resultArea.classList.add('hidden');
 
-            const systemPrompt = `너는 초중등 학생의 영어 에세이를 첨삭해 주는 다정한 '리야샘 AI'야.
-            
-            [첨삭 대원칙 - 매우 중요]
-            1. 학생의 표현 유지: 학생이 쓴 단어나 문장 표현이 문법적으로나 맥락상 문제가 없다면, 더 좋은 표현으로 바꾸지 말고 반드시 '그대로 유지'해. 학생의 원래 '목소리(Voice)'와 자신감을 지켜주는 것이 너의 최우선 임무야.
-            2. 최소 교정 원칙: 명백한 문법적 오류(시제, 수 일치, 관사, 철자 등)가 있는 경우에만 수정해. 
-            3. 구조 분석 및 보강: 
-               - 서론: 본론 문단 개수와 서론에서 언급한 이유의 개수가 일치하는지 확인.
-               - 본론: 각 문단이 [주제-근거-경험] 구조인지 확인하고, 부족한 요소가 있을 때만 학생의 현재 수준에 맞는 아주 쉬운 문장으로 살짝 보완해줘.
-               - 결론: 내용을 요약하며 설득력 있게 마무리.
-            
-            [출력 방식]
-            - 수정 부분: 수정이 발생한 문장만 <del>취소선</del>과 <ins>강조</ins> 태그를 사용해 시각적으로 보여줘. 수정되지 않은 문장은 그대로 표시해.
-            - 설명: 각 문단 아래에 '💡 리야샘 AI는 왜 이렇게 고쳤나요?' 섹션을 만들어 한국어로 아이의 눈높이에 맞춰 아주 다정하고 친절하게 설명해줘.`;
+            const systemPrompt = `너의 이름은 '리야샘 AI'이고, 학생들의 영어 에세이 작성을 도와주는 전문 튜터야.
+            아래 지침을 엄격히 준수하여 학생의 글을 첨삭해줘.
+
+            [첨삭 핵심 지침]
+            1. 학생 수준 맞춤형 수정: 학생의 원래 단어, 톤, 스타일을 최대한 유지해. 문법이나 표현이 자연스럽지 않을 때만 학생의 수준에 맞춰서 쉬운 단어로 자연스럽게 수정해줘.
+            2. 구조 확인: 
+               - 첫 문단은 반드시 서론(Introduction), 마지막 문단은 결론(Conclusion)이어야 해.
+               - 본문(Body)의 각 문단은 반드시 [이유(Reason) - 설명(Explanation) - 경험/예시(Experience/Example)]의 구조를 갖춰야 해.
+            3. 서론-본문 일치 (매우 중요): 서론에는 본문의 각 문단에서 다룰 이유들이 모두 언급되어야 해. 
+               - 예: 본문이 3개 문단이면 서론에 3개의 이유가 다 나와야 함.
+               - 만약 본문 개수와 서론의 이유 개수가 맞지 않으면, 본문의 내용을 바탕으로 서론에 이유를 추가해서 고쳐주거나 다정하게 지적해줘.
+            4. 시각적 첨삭: 수정이 필요한 부분은 반드시 <del>기존 문장</del> <ins>수정된 문장</ins> 태그를 사용해. (ins 태그 안의 글씨는 붉은색으로 보일 거야).
+            5. 이유 설명: 왜 그렇게 고쳤는지 '💡 리야샘 AI의 꿀팁' 섹션을 만들어 아주 쉽게 설명해줘.
+            6. 말투: 쉽고 격려하는 어조를 사용해. (예: "정말 잘 썼어!", "조금만 다듬으면 완벽해!")
+
+            [출력 결과 양식]
+            - 결과는 HTML 형식으로 작성해줘.
+            - 각 섹션마다 다정한 피드백을 포함해줘.`;
 
             try {
-                // 지수 백오프를 활용한 호출 시도 (최대 5회)
                 let success = false;
                 let data;
                 for (let i = 0; i < 5; i++) {
@@ -151,7 +153,7 @@
                             body: JSON.stringify({
                                 contents: [{
                                     parts: [
-                                        { text: "이 에세이를 분석해서 '리야샘 AI'의 이름으로 첨삭 보고서를 HTML 형식으로 작성해줘." },
+                                        { text: "리야샘 AI로서 이 에세이를 분석하고 보고서를 작성해줘." },
                                         { inlineData: { mimeType: "image/png", data: base64Image } }
                                     ]
                                 }],
@@ -167,14 +169,14 @@
                     await new Promise(resolve => setTimeout(resolve, Math.pow(2, i) * 1000));
                 }
 
-                if (!success) throw new Error("API 요청에 실패했습니다. 키를 확인하거나 나중에 다시 시도해주세요.");
+                if (!success) throw new Error("분석에 실패했습니다.");
                 
                 const output = data.candidates[0].content.parts[0].text;
                 formattedResult.innerHTML = output.replace(/```html|```/g, '').trim();
                 resultArea.classList.remove('hidden');
                 window.scrollTo({ top: resultArea.offsetTop - 40, behavior: 'smooth' });
             } catch (error) {
-                alert("리야샘 AI 분석 중 오류가 발생했습니다: " + error.message);
+                alert("오류 발생: " + error.message);
             } finally {
                 loading.classList.remove('active');
                 analyzeBtn.disabled = false;
